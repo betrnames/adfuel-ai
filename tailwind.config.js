@@ -43,8 +43,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Sora', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Sora', 'system-ui', '-apple-system', 'sans-serif'],
       },
     },
   },

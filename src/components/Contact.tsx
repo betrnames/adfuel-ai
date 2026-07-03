@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Send, CheckCircle2, Loader2, Mail, MapPin, Phone } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 type FormStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -22,17 +21,22 @@ export default function Contact() {
     e.preventDefault();
     setStatus('loading');
 
-    const { error } = await supabase.from('contact_submissions').insert([
-      {
-        name: formData.name,
-        email: formData.email,
-        company: formData.company,
-        budget: formData.budget,
-        message: formData.message,
-      },
-    ]);
-
-    if (error) {
+    try {
+      const res = await fetch('https://formspree.io/f/mwvdpgay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          budget: formData.budget,
+          message: formData.message,
+          site: 'adfuel.ai',
+          form: 'contact',
+        }),
+      });
+      if (!res.ok) throw new Error(`Formspree ${res.status}`);
+    } catch {
       setStatus('error');
       setTimeout(() => setStatus('idle'), 3000);
       return;
