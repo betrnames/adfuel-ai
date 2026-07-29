@@ -59,14 +59,21 @@ export default function Hero() {
           </h1>
 
           <p
+            className={`text-base sm:text-lg text-white/60 leading-relaxed max-w-2xl mb-4 ${
+              isVisible ? 'animate-fade-in-up' : 'opacity-0'
+            }`}
+            style={{ animationDelay: '0.25s' }}
+          >
+            AdFuel.ai is an AI-powered advertising agency that combines machine learning with creative strategy to build and manage ad campaigns across Google, Meta, TikTok, and LinkedIn.
+          </p>
+
+          <p
             className={`text-lg sm:text-xl text-white/50 leading-relaxed max-w-2xl mb-12 ${
               isVisible ? 'animate-fade-in-up' : 'opacity-0'
             }`}
-            style={{ animationDelay: '0.3s' }}
+            style={{ animationDelay: '0.35s' }}
           >
-            We combine cutting-edge AI with bold creative strategy to build advertising
-            campaigns that don't just perform -- they dominate. From strategy to execution,
-            we fuel your brand's next chapter.
+            From strategy to execution, we fuel your brand's next chapter.
           </p>
 
           <div

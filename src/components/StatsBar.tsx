@@ -19,6 +19,7 @@ export default function StatsBar() {
             <StatItem key={stat.label} stat={stat} isVisible={isVisible} delay={i * 150} />
           ))}
         </div>
+        <p className="text-xs text-white/20 mt-6 text-center">Platform performance data, 2026</p>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ const footerLinks = {
   Resources: [
     { label: 'Documentation', href: '#' },
     { label: 'Help Center', href: '#' },
+    { label: 'llms.txt', href: '/llms.txt' },
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Terms of Service', href: '/terms' },
   ],

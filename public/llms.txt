@@ -1,0 +1,22 @@
+# AdFuel.ai
+
+> AI-powered advertising agency delivering performance marketing, creative strategy, and data-driven growth campaigns.
+
+## What this is
+AdFuel.ai is an AI-powered advertising agency that builds and manages ad campaigns across platforms. Combines AI creative generation with performance marketing strategy to deliver measurable results. Services include paid media management, creative production, audience targeting, and analytics.
+
+## Services
+- AI-powered ad creative generation
+- Performance marketing (Google Ads, Meta, TikTok, LinkedIn)
+- Creative strategy and brand campaigns
+- Data-driven audience targeting and optimization
+- Campaign analytics and reporting
+
+## Key pages
+- https://adfuel.ai/ — homepage and service overview
+- https://adfuel.ai/branding — brand identity and guidelines
+- https://adfuel.ai/privacy — privacy policy
+- https://adfuel.ai/terms — terms of service
+
+## Contact
+- info@betrnames.com
