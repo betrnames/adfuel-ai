@@ -73,13 +73,13 @@ export function DeskChat() {
         <section
           className="pointer-events-auto flex h-[min(32rem,calc(100dvh-6rem))] w-full max-w-sm flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-[0_16px_48px_rgb(0_0_0/0.4)]"
           role="dialog"
-          aria-label="AdFuel desk"
+          aria-label="AdFuel Ask"
         >
           <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
             <div className="flex items-center gap-2">
               <FlameMark className="size-5 text-primary" />
               <div>
-                <p className="text-sm font-medium">Desk</p>
+                <p className="text-sm font-medium">Ask</p>
                 <p className="text-xs text-faint">No humans. No agency.</p>
               </div>
             </div>
@@ -87,7 +87,7 @@ export function DeskChat() {
               type="button"
               className="grid size-11 place-items-center rounded-sm text-muted hover:bg-surface-2 hover:text-fg"
               onClick={() => setOpen(false)}
-              aria-label="Close desk"
+              aria-label="Close"
             >
               <X className="size-4" />
             </button>
@@ -107,7 +107,7 @@ export function DeskChat() {
                 {item.text}
               </p>
             ))}
-            {busy ? <p className="text-sm text-faint">Desk is writing…</p> : null}
+            {busy ? <p className="text-sm text-faint">Writing…</p> : null}
             {messages.length < 3 ? (
               <div className="flex flex-wrap gap-2 pt-1">
                 {STARTERS.map((starter) => (
@@ -130,7 +130,7 @@ export function DeskChat() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask the desk"
+                placeholder="Ask a question"
                 maxLength={400}
                 className="h-11 min-w-0 flex-1 rounded-sm border border-border bg-bg px-3 text-sm outline-none placeholder:text-faint focus-visible:border-primary/60"
               />

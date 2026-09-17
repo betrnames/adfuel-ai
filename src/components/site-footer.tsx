@@ -25,6 +25,9 @@ export function SiteFooter() {
           <Link to="/legal" hash="privacy" className="hover:text-fg">
             Privacy
           </Link>
+          <Link to="/legal" hash="refunds" className="hover:text-fg">
+            Refunds
+          </Link>
           <a href="/llms.txt" className="hover:text-fg">
             llms.txt
           </a>

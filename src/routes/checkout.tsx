@@ -204,6 +204,10 @@ function CheckoutInner({ user }: { user: { displayName: string | null; primaryEm
           <Link to="/account" className="text-muted hover:text-fg">
             Account
           </Link>
+          . See our{" "}
+          <Link to="/legal" hash="refunds" className="text-muted hover:text-fg">
+            Refunds & Terms
+          </Link>
           .
         </p>
       </form>
