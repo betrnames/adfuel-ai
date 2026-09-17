@@ -49,6 +49,7 @@ export type AdPackContent = {
   images: AdImage[];
   launch?: LaunchFields | null;
   brand?: BrandLook | null;
+  writer?: "hosted" | "byok" | "draft";
 };
 
 export type AdPackRecord = {

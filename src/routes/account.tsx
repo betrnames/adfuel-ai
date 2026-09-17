@@ -1,15 +1,23 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { RedirectToSignIn } from "@/lib/auth/gates";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { SignedInPage } from "@/lib/auth/signed-in";
+import type { AppUser } from "@/lib/auth/use-current-user";
 import { FuelGauge } from "@/components/fuel-gauge";
-import { getMyProfile } from "@/lib/ads/server";
+import { getMyProfile } from "@/lib/ads/packs-server";
 import { listMyPayments } from "@/lib/ads/billing-server";
-import { PLAN_DETAILS, isPaidPlan } from "@/lib/ads/plans";
+import { PLAN_DETAILS, TRIAL_CREDITS, isPaidPlan } from "@/lib/ads/plans";
 import type { PaymentRecord } from "@/lib/ads/billing";
 import type { Profile } from "@/lib/ads/types";
 
-export const Route = createFileRoute("/account")({ component: AccountPage });
+import { WaitlistGate } from "@/components/waitlist-gate";
+
+export const Route = createFileRoute("/account")({
+  component: () => (
+    <WaitlistGate>
+      <AccountPage />
+    </WaitlistGate>
+  ),
+});
 
 function money(cents: number, currency: string) {
   try {
@@ -24,12 +32,14 @@ function money(cents: number, currency: string) {
 }
 
 function AccountPage() {
-  const { user, isPending } = useCurrentUserState();
+  return <SignedInPage>{(user) => <AccountInner user={user} />}</SignedInPage>;
+}
+
+function AccountInner({ user }: { user: AppUser }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [payments, setPayments] = useState<PaymentRecord[] | null>(null);
 
   useEffect(() => {
-    if (!user) return;
     let cancelled = false;
     Promise.all([getMyProfile(), listMyPayments()])
       .then(([nextProfile, nextPayments]) => {
@@ -45,16 +55,7 @@ function AccountPage() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
-
-  if (isPending) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-12">
-        <div className="h-40 animate-pulse rounded-xl bg-surface" />
-      </div>
-    );
-  }
-  if (!user) return <RedirectToSignIn />;
+  }, []);
 
   const paid = profile && isPaidPlan(profile.plan) ? PLAN_DETAILS[profile.plan] : null;
 
@@ -75,11 +76,11 @@ function AccountPage() {
                 {paid.name} {paid.octane}
               </h2>
               <p className="mt-1 text-sm text-muted">
-                {paid.priceLabel}/mo · {paid.credits} campaigns
+                {paid.priceLabel}/mo · {paid.credits} packs
               </p>
               <Link
                 to="/pricing"
-                className="mt-4 inline-flex h-11 items-center rounded-sm border border-border px-4 text-sm font-medium hover:border-border-strong"
+                className="mt-4 inline-flex h-11 items-center rounded-full border border-border px-5 text-sm font-semibold hover:border-border-strong"
               >
                 Change plan
               </Link>
@@ -87,11 +88,13 @@ function AccountPage() {
           ) : (
             <>
               <h2 className="mt-2 text-xl font-semibold tracking-tight">Free trial</h2>
-              <p className="mt-1 text-sm text-muted">Three campaigns. Pay $12/mo to keep going.</p>
+              <p className="mt-1 text-sm text-muted">
+                {TRIAL_CREDITS} watermarked draft. Pay {PLAN_DETAILS.regular.priceLabel}/mo for 3 live statics and the 7-day Launch plan, or add your own key.
+              </p>
               <Link
                 to="/checkout"
                 search={{ plan: "regular" }}
-                className="mt-4 inline-flex h-11 items-center rounded-sm bg-primary px-4 text-sm font-medium text-primary-fg"
+                className="mt-4 inline-flex h-11 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-fg hover:bg-primary-hover"
               >
                 Pay Regular — $12
               </Link>
@@ -103,12 +106,12 @@ function AccountPage() {
           <p className="text-xs font-medium uppercase tracking-wide text-muted">Connections</p>
           <h2 className="mt-2 text-xl font-semibold tracking-tight">AI after you pay</h2>
           <p className="mt-1 text-sm text-muted">
-            Free kits are drafts. Hosted AI unlocks on a paid plan. Or add your own key on
+            Free packs are watermarked. Live statics unlock on a paid plan. Or add your own key on
             Connections anytime.
           </p>
           <Link
             to="/connections"
-            className="mt-4 inline-flex h-11 items-center rounded-sm border border-border px-4 text-sm font-medium hover:border-border-strong"
+            className="mt-4 inline-flex h-11 items-center rounded-full border border-border px-5 text-sm font-semibold hover:border-border-strong"
           >
             Manage connections
           </Link>

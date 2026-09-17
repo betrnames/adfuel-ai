@@ -4,6 +4,7 @@ import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { DeskChat } from "@/components/desk-chat";
+import { CookieBanner } from "@/components/cookie-banner";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 
@@ -18,7 +19,7 @@ export const Route = createRootRoute({
       {
         name: "description",
         content:
-          "AdFuel.ai — self-serve first-campaign kit. Add a product. Get copy, budget, and launch steps. Free kits are drafts. AI when you pay, or bring your own API key. We don’t run ads.",
+          "AdFuel.ai — paste a product URL. Get 3 on-brand statics, copy, and a 7-day Launch plan. You go live. We don’t run ads.",
       },
       { name: "theme-color", content: "#050B14" },
     ],
@@ -56,6 +57,7 @@ function Root() {
           </div>
           <Toaster theme="dark" position="bottom-center" richColors={false} />
           <DeskChat />
+          <CookieBanner />
         </AuthProvider>
         <Scripts />
       </body>

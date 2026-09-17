@@ -12,23 +12,7 @@ import {
   type PaymentRecord,
 } from "./billing";
 import type { Profile } from "./types";
-
-async function readProfile(userId: string): Promise<Profile> {
-  const sql = await getSql();
-  const rows = await sql<{
-    user_id: string;
-    plan: string;
-    credits: number;
-    created_at: string;
-  }>`select user_id, plan, credits, created_at from profiles where user_id = ${userId} limit 1`;
-  const row = rows[0];
-  return {
-    userId: row?.user_id ?? userId,
-    plan: row?.plan ?? "trial",
-    credits: Number(row?.credits ?? 0),
-    createdAt: row?.created_at ?? new Date().toISOString(),
-  };
-}
+import { loadOrCreateProfile } from "./profile";
 
 async function activatePaidPlan(input: {
   userId: string;
@@ -47,7 +31,7 @@ async function activatePaidPlan(input: {
       select id from payments
       where provider = ${input.provider} and provider_ref = ${input.providerRef}
       limit 1`;
-    if (existing[0]) return readProfile(input.userId);
+    if (existing[0]) return loadOrCreateProfile(input.userId);
   }
 
   await sql`insert into payments (
@@ -83,7 +67,7 @@ async function activatePaidPlan(input: {
     on conflict (user_id) do update
     set plan = excluded.plan, credits = excluded.credits, updated_at = now()`;
 
-  return readProfile(input.userId);
+  return loadOrCreateProfile(input.userId);
 }
 
 export async function fulfillStripeSession(sessionId: string, expectedUserId?: string) {

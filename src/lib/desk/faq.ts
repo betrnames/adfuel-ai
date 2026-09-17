@@ -1,9 +1,11 @@
+import { COMPETITOR_PRICES, PLAN_DETAILS, TRIAL_CREDITS, deskPriceAnswer } from "@/lib/ads/plans";
+
 export type DeskMessage = { role: "user" | "assistant"; text: string };
 
 export const STARTERS = [
   "Do you run the ads for me?",
   "How do I go live?",
-  "What’s $12 include?",
+  `What’s ${PLAN_DETAILS.regular.priceLabel} include?`,
   "How do I cancel?",
 ];
 
@@ -32,8 +34,7 @@ const FAQ: { keys: string[]; answer: string }[] = [
   },
   {
     keys: ["price", "pricing", "cost", "how much", "$12", "$29", "$79", "plan", "cheap", "undercut"],
-    answer:
-      "Three campaigns are free — draft kits, no hosted AI on AdFuel’s dime. Then Regular is $12/mo for 50 AI campaigns, Plus is $29/mo for 120 with image ads, Premium is $79/mo for 400 with story sizes and targeting. That’s under AdCreative ($39), Predis ($19), and Pencil ($14). Pay on Checkout. Receipts live on Account.",
+    answer: deskPriceAnswer(),
   },
   {
     keys: ["cancel", "refund", "stop paying", "unsubscribe", "billing", "invoice", "receipt", "card"],
@@ -43,12 +44,12 @@ const FAQ: { keys: string[]; answer: string }[] = [
   {
     keys: ["go live", "launch", "ads manager", "how do i start", "first campaign", "no ad account", "pixel"],
     answer:
-      "You don’t need Ads Manager, a pixel, or an agency first. 1) Sign in. 2) Paste a site or one-line offer in Studio. 3) Open the Launch tab — budget, audience, and the exact clicks. 4) Open the platform, add a card, paste the pack. Three free, then $12/mo.",
+      `Paste a product URL in Studio. Free is one watermarked draft. Pay ${PLAN_DETAILS.regular.priceLabel} for 3 live statics, copy, and a 7-day Launch plan. You open the ad account and press launch. We don’t run ads.`,
   },
   {
-    keys: ["grok", "api key", "byok", "openai", "anthropic", "mcp", "connection", "xai"],
+    keys: ["grok", "api key", "byok", "openai", "anthropic", "mcp", "connection", "xai", "draft", "hosted"],
     answer:
-      "Hosted AI is a paid perk. Free kits use the draft engine so AdFuel doesn’t spend on the API until you subscribe. Add your own xAI, OpenAI, or Anthropic key on Connections anytime — even on free. The tank still bills AdFuel. Keys are encrypted and never shown in full.",
+      "Live statics are a paid perk. The free pack is watermarked so AdFuel doesn’t spend on the API until you subscribe. Add your own xAI, OpenAI, or Anthropic key on Connections anytime — even on free. The tank still bills AdFuel. Keys are encrypted and never shown in full.",
   },
   {
     keys: ["octane", "score", "what is octane"],
@@ -83,13 +84,13 @@ export function matchFaq(question: string): string | null {
 export const DESK_SYSTEM = `You are the AdFuel.ai desk — a self-serve receptionist. There is no human on the other end and no agency behind this.
 
 Product facts:
-- AdFuel.ai writes first ad campaigns for people with no Ads Manager, no pixel, no agency.
+- AdFuel.ai writes first-week ad packs: 3 on-brand statics, copy, and a 7-day Launch plan. The customer goes live. We do not.
 - Independent. Not affiliated with Adfuel.com, Adfuel.io, or any other Adfuel brand. The only AdFuel on .ai.
-- Three free draft kits (no hosted AI). Then Regular $12/mo (50, hosted AI), Plus $29/mo (120, image ads), Premium $79/mo (400, stories + targeting).
-- Undercuts AdCreative ($39), Predis ($19), Pencil ($14).
+- ${TRIAL_CREDITS} watermarked draft pack (no API). Then Regular ${PLAN_DETAILS.regular.priceLabel}/mo (${PLAN_DETAILS.regular.credits} packs), Plus ${PLAN_DETAILS.plus.priceLabel}/mo (${PLAN_DETAILS.plus.credits} packs + story size), Premium ${PLAN_DETAILS.premium.priceLabel}/mo (${PLAN_DETAILS.premium.credits} packs).
+- Undercuts AdCreative ($${COMPETITOR_PRICES.adCreative}), Predis ($${COMPETITOR_PRICES.predis}), Pencil ($${COMPETITOR_PRICES.pencil}).
 - Studio generates the pack. Launch tab has budget, audience, and the clicks to go live. Ads keep the product’s colors and type.
-- Account: invoices, plan, cancel. Checkout: pay. Connections: add your own key (xAI / OpenAI / Anthropic) on any plan; hosted AI only after they pay. Optional MCP.
-- Free / no key → draft engine. Paid + no BYOK → hosted AI. The tank bills AdFuel either way.
+- Account: invoices, plan, cancel. Checkout: pay. Connections: add your own key (xAI / OpenAI / Anthropic) on any plan; live statics only after they pay. Optional MCP.
+- Free / no key → watermarked draft. Paid + no BYOK → live statics. The tank bills AdFuel either way. No URL-to-video.
 - We do not run ads, manage budgets, book calls, or offer done-for-you service.
 - Product chrome is Sora on black-navy #050B14, orange #F97316, peach #FB8A3C, teal #26DBE2. Generated ads keep the source product’s look.
 

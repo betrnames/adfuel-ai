@@ -12,7 +12,12 @@ const PLATFORM_VOICE: Record<Platform, { place: string; cta: string }> = {
 };
 
 function firstSentence(prompt: string): string {
-  return prompt.split(/[\n.|]/)[0]?.trim().slice(0, 90) || prompt.slice(0, 90);
+  const trimmed = prompt.trim();
+  const withoutUrl = trimmed.replace(/^https?:\/\/\S+\s*[—\-–:]?\s*/i, "");
+  const source = withoutUrl || trimmed;
+  const line = source.split(/[\n|]/)[0]?.trim() || source;
+  const sentence = line.split(/(?<=\w{2})\.\s+/)[0]?.trim() || line;
+  return sentence.slice(0, 90) || trimmed.slice(0, 90);
 }
 
 export function writeDraftPack(input: {
@@ -59,7 +64,7 @@ export function writeDraftPack(input: {
     headlines: headlines.slice(0, engine === "premium" ? 6 : engine === "plus" ? 6 : 3),
     primaryTexts: primary.slice(0, engine === "regular" ? 2 : 3),
     descriptions: [
-      `${productName} — first campaign kit.`,
+      `${productName} — first-week pack.`,
       `A starter test on ${voice.place}.`,
     ],
     ctas: [voice.cta, "Learn more", "Get started"],
@@ -80,9 +85,10 @@ export function writeDraftPack(input: {
         why: "Keeps spend honest for a first-timer.",
       },
     ],
+    writer: "draft",
     octane: {
       score: input.mcpContext ? 68 : 62,
-      rationale: `Draft engine wrote this from the brief without a live model.${brandNote} Add AI or your own key for a tighter score.`,
+      rationale: `Draft pack — watermarked statics, no live model.${brandNote} Pay $12 for 3 live statics and the 7-day Launch plan.`,
       lifts: ["Name the buyer in the first line", "Put the price in the primary text", "Cut any line a stranger wouldn’t say"],
     },
     targeting: engine === "premium" ? { audiences: [`People searching for ${productName}`], placements: [voice.place] } : null,

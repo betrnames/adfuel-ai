@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const GREETING: DeskMessage = {
   role: "assistant",
-  text: "Desk here. Self-serve only — we don’t run ads or take calls. Free kits are drafts. AI starts when you pay, or when you add your own key. Ask about going live, plans, or cancel.",
+  text: "Desk here. Self-serve only — we don’t run ads or take calls. One watermarked draft is free. Pay $12 for 3 live statics and a 7-day Launch plan, or add your own key. Ask about going live, plans, or cancel.",
 };
 
 function guestId() {

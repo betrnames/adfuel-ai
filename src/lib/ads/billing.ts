@@ -99,7 +99,7 @@ export async function createStripeCheckout(input: {
     "line_items[0][price_data][currency]": "usd",
     "line_items[0][price_data][unit_amount]": String(details.price * 100),
     "line_items[0][price_data][product_data][name]": `AdFuel.ai ${details.name} ${details.octane}`,
-    "line_items[0][price_data][product_data][description]": `${details.credits} campaigns each month`,
+    "line_items[0][price_data][product_data][description]": `${details.credits} first-week packs each month`,
     "line_items[0][price_data][recurring][interval]": "month",
     success_url: `${origin}/checkout?plan=${input.plan}&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/checkout?plan=${input.plan}`,

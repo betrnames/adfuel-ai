@@ -19,7 +19,7 @@ export function Logo({ className }: { className?: string }) {
       className={cn("inline-flex items-center gap-2.5 text-fg", className)}
       aria-label="AdFuel.ai home"
     >
-      <FlameMark className="size-7 text-primary-soft flame-sway" />
+      <FlameMark className="size-7 text-primary flame-sway" />
       <span className="text-xl font-bold tracking-tight">
         AdFuel
         <span className="text-primary-soft">.ai</span>

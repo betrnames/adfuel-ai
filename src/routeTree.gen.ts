@@ -13,7 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ConnectionsRouteImport } from './routes/connections'
-import { Route as LibraryRouteImport } from './routes/library'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as StudioRouteImport } from './routes/studio'
@@ -42,9 +43,14 @@ const ConnectionsRoute = ConnectionsRouteImport.update({
   path: '/connections',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LibraryRoute = LibraryRouteImport.update({
-  id: '/library',
-  path: '/library',
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -88,7 +94,8 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/connections': typeof ConnectionsRoute
-  '/library': typeof LibraryRoute
+  '/faq': typeof FaqRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/studio': typeof StudioRoute
@@ -102,7 +109,8 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/connections': typeof ConnectionsRoute
-  '/library': typeof LibraryRoute
+  '/faq': typeof FaqRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/studio': typeof StudioRoute
@@ -117,7 +125,8 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/checkout': typeof CheckoutRoute
   '/connections': typeof ConnectionsRoute
-  '/library': typeof LibraryRoute
+  '/faq': typeof FaqRoute
+  '/legal': typeof LegalRoute
   '/login': typeof LoginRoute
   '/pricing': typeof PricingRoute
   '/studio': typeof StudioRoute
@@ -133,7 +142,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/checkout'
     | '/connections'
-    | '/library'
+    | '/faq'
+    | '/legal'
     | '/login'
     | '/pricing'
     | '/studio'
@@ -147,7 +157,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/checkout'
     | '/connections'
-    | '/library'
+    | '/faq'
+    | '/legal'
     | '/login'
     | '/pricing'
     | '/studio'
@@ -161,7 +172,8 @@ export interface FileRouteTypes {
     | '/account'
     | '/checkout'
     | '/connections'
-    | '/library'
+    | '/faq'
+    | '/legal'
     | '/login'
     | '/pricing'
     | '/studio'
@@ -176,7 +188,8 @@ export interface RootRouteChildren {
   AccountRoute: typeof AccountRoute
   CheckoutRoute: typeof CheckoutRoute
   ConnectionsRoute: typeof ConnectionsRoute
-  LibraryRoute: typeof LibraryRoute
+  FaqRoute: typeof FaqRoute
+  LegalRoute: typeof LegalRoute
   LoginRoute: typeof LoginRoute
   PricingRoute: typeof PricingRoute
   StudioRoute: typeof StudioRoute
@@ -216,11 +229,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConnectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/library': {
-      id: '/library'
-      path: '/library'
-      fullPath: '/library'
-      preLoaderRoute: typeof LibraryRouteImport
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -280,7 +300,8 @@ const rootRouteChildren: RootRouteChildren = {
   AccountRoute: AccountRoute,
   CheckoutRoute: CheckoutRoute,
   ConnectionsRoute: ConnectionsRoute,
-  LibraryRoute: LibraryRoute,
+  FaqRoute: FaqRoute,
+  LegalRoute: LegalRoute,
   LoginRoute: LoginRoute,
   PricingRoute: PricingRoute,
   StudioRoute: StudioRoute,

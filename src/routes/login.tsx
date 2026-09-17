@@ -6,8 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FlameMark } from "@/components/logo";
+import { PLAN_DETAILS, trialKitLine } from "@/lib/ads/plans";
+import { WaitlistGate } from "@/components/waitlist-gate";
 
-export const Route = createFileRoute("/login")({ component: Login });
+export const Route = createFileRoute("/login")({
+  component: () => (
+    <WaitlistGate>
+      <Login />
+    </WaitlistGate>
+  ),
+});
 
 function Login() {
   const { user, isPending } = useCurrentUserState();
@@ -63,7 +71,7 @@ function Login() {
           <FlameMark className="size-6 text-primary" />
           <div>
             <h1 className="text-lg font-semibold tracking-tight">Sign in to AdFuel.ai</h1>
-            <p className="text-xs text-muted">3 free campaigns. Then $12 to keep going.</p>
+            <p className="text-xs text-muted">{trialKitLine().replace(/^./, (c) => c.toUpperCase())}. Then {PLAN_DETAILS.regular.priceLabel} for 3 live statics.</p>
           </div>
         </div>
 

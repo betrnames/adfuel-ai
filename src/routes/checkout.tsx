@@ -2,17 +2,17 @@ import { useEffect, useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Check, Lock } from "lucide-react";
-import { RedirectToSignIn } from "@/lib/auth/gates";
-import { useCurrentUserState } from "@/lib/auth/use-current-user";
+import { SignedInPage } from "@/lib/auth/signed-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getMyProfile } from "@/lib/ads/server";
+import { getMyProfile } from "@/lib/ads/packs-server";
 import { COUNTRIES } from "@/lib/ads/billing";
 import { finalizeStripeCheckout, getBillingConfig, startCheckout } from "@/lib/ads/billing-server";
 import { PLAN_DETAILS, parsePlan } from "@/lib/ads/plans";
 import { FuelGauge } from "@/components/fuel-gauge";
 import type { Profile } from "@/lib/ads/types";
+import { WaitlistGate } from "@/components/waitlist-gate";
 
 type CheckoutSearch = { plan: "regular" | "plus" | "premium"; session_id?: string };
 
@@ -22,13 +22,30 @@ export const Route = createFileRoute("/checkout")({
     const session_id = typeof search.session_id === "string" ? search.session_id : undefined;
     return { plan: plan ?? "regular", session_id };
   },
-  component: CheckoutPage,
+  component: () => (
+    <WaitlistGate>
+      <CheckoutPage />
+    </WaitlistGate>
+  ),
 });
 
 function CheckoutPage() {
+  return (
+    <SignedInPage
+      skeleton={
+        <div className="mx-auto max-w-lg px-4 py-16">
+          <div className="h-64 animate-pulse rounded-xl bg-surface" />
+        </div>
+      }
+    >
+      {(user) => <CheckoutInner user={user} />}
+    </SignedInPage>
+  );
+}
+
+function CheckoutInner({ user }: { user: { displayName: string | null; primaryEmail: string | null } }) {
   const { plan: planId, session_id: sessionId } = Route.useSearch();
   const plan = PLAN_DETAILS[planId];
-  const { user, isPending } = useCurrentUserState();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [processor, setProcessor] = useState<"stripe" | "ledger">("ledger");
@@ -71,15 +88,6 @@ function CheckoutPage() {
       cancelled = true;
     };
   }, [user, sessionId, plan.name, navigate]);
-
-  if (isPending) {
-    return (
-      <div className="mx-auto max-w-lg px-4 py-16">
-        <div className="h-64 animate-pulse rounded-xl bg-surface" />
-      </div>
-    );
-  }
-  if (!user) return <RedirectToSignIn />;
 
   async function onPay(event: FormEvent) {
     event.preventDefault();
@@ -124,7 +132,7 @@ function CheckoutPage() {
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary-soft">Checkout</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight">Pay for {plan.name}</h1>
           <p className="mt-2 text-sm text-muted">
-            {plan.priceLabel}/mo for {plan.credits} campaigns. Renews until you cancel.
+            {plan.priceLabel}/mo for {plan.credits} first-week packs. Renews until you cancel.
           </p>
         </div>
 

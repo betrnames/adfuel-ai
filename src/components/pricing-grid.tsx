@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import { PLAN_DETAILS } from "@/lib/ads/plans";
+import { PLAN_DETAILS, STATICS_PER_PACK } from "@/lib/ads/plans";
 import { cn } from "@/lib/utils";
 
 const order = ["regular", "plus", "premium"] as const;
@@ -29,7 +29,8 @@ export function PricingGrid({ highlight = "regular" }: { highlight?: "regular" |
               <span className="text-sm text-muted">/mo</span>
             </p>
             <p className="mt-1 text-xs text-faint">
-              {plan.credits} ads each month · {Math.round((plan.price / plan.credits) * 100)}¢ each
+              {plan.credits} packs · {plan.credits * STATICS_PER_PACK[plan.maxEngine]} statics ·{" "}
+              {Math.round((plan.price / (plan.credits * STATICS_PER_PACK[plan.maxEngine])) * 100)}¢ each
             </p>
             <Link
               to="/checkout"

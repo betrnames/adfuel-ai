@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdPreview } from "@/components/ad-preview";
 import { OctaneCard } from "@/components/octane-card";
-import { getSharedPack } from "@/lib/ads/server";
+import { getSharedPack } from "@/lib/ads/packs-server";
 import type { AdPackRecord } from "@/lib/ads/types";
+import { TRIAL_CREDITS } from "@/lib/ads/plans";
 
 export const Route = createFileRoute("/p/$shareId")({ component: SharedPack });
 
@@ -73,7 +74,7 @@ function SharedPack() {
       <div className="mt-6 rounded-xl border border-primary/30 bg-primary/10 p-5 text-center">
         <p className="text-base font-medium">Can you beat {pack.pack.octane.score}?</p>
         <p className="mt-1 text-sm text-muted">
-          Paste your product. Get a first campaign and a score in 20 seconds. Three are free.
+          Paste a product URL. Get 3 statics, copy, and a 7-day plan. {TRIAL_CREDITS} watermarked draft is free.
         </p>
         <Link
           to="/"

@@ -166,7 +166,7 @@ export function buildUserPrompt(input: {
     `Platform: ${input.platform}`,
     `Engine: ${input.engine}`,
     `Offer / URL / brief: ${input.prompt}`,
-    `The advertiser has no existing ad tools or accounts. Write as if this is their first campaign.`,
+    `The advertiser will spend this week. Write a first-week test they can paste into Ads Manager themselves. We do not launch for them.`,
     `If the brief is a URL or domain, infer the product, offer, and buyer from it. Write as if you already know the brand.`,
     `Keep the same colors and typography as the product. Do not restyle.`,
     input.brand
@@ -302,27 +302,37 @@ export async function pingProvider(provider: LlmProviderId, apiKey: string, mode
   if (!res.ok) throw new Error(`Key was rejected (${res.status})`);
 }
 
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function generateXaiImage(apiKey: string, prompt: string, aspect: string): Promise<string | null> {
   for (const model of IMAGE_MODELS) {
-    const res = await fetch("https://api.x.ai/v1/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        prompt,
-        n: 1,
-        resolution: "1k",
-        aspect_ratio: aspect,
-        response_format: "url",
-      }),
-    });
-    if (!res.ok) continue;
-    const body = (await res.json()) as { data?: { url?: string }[] };
-    const url = body.data?.[0]?.url;
-    if (url) return url;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const res = await fetch("https://api.x.ai/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          prompt,
+          n: 1,
+          resolution: "1k",
+          aspect_ratio: aspect,
+          response_format: "url",
+        }),
+      });
+      if (res.status === 429 || res.status >= 500) {
+        await wait(700 * (attempt + 1));
+        continue;
+      }
+      if (!res.ok) break;
+      const body = (await res.json()) as { data?: { url?: string }[] };
+      const url = body.data?.[0]?.url;
+      if (url) return url;
+    }
   }
   return null;
 }

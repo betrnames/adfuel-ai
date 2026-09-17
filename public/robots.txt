@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adfuel.ai/sitemap.xml
+Llms-txt: https://adfuel.ai/llms.txt

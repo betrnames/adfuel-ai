@@ -4,10 +4,12 @@ import { Menu, X } from "lucide-react";
 import { SignedIn, SignedOut, UserButton } from "@/lib/auth/gates";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { Logo } from "@/components/logo";
+import { waitlistPublic } from "@/lib/waitlist";
 
 export function SiteNav() {
   const { user, isPending } = useCurrentUserState();
   const [open, setOpen] = useState(false);
+  const waitlist = waitlistPublic();
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-xl">
@@ -20,6 +22,10 @@ export function SiteNav() {
           <Link to="/pricing" className="rounded-lg px-4 py-2 hover:bg-fg/5 hover:text-fg">
             Pricing
           </Link>
+          <Link to="/faq" className="rounded-lg px-4 py-2 hover:bg-fg/5 hover:text-fg">
+            FAQ
+          </Link>
+          {!waitlist ? (
           <SignedIn>
             <Link to="/studio" className="rounded-lg px-4 py-2 hover:bg-fg/5 hover:text-fg">
               Studio
@@ -31,9 +37,17 @@ export function SiteNav() {
               Account
             </Link>
           </SignedIn>
+          ) : null}
         </nav>
         <div className="flex items-center gap-2">
-          {isPending ? (
+          {waitlist ? (
+            <a
+              href="/#notify"
+              className="hidden h-11 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-fg hover:bg-primary-hover sm:inline-flex"
+            >
+              Get notified
+            </a>
+          ) : isPending ? (
             <div className="h-10 w-24 animate-pulse rounded-full bg-surface-2" />
           ) : user ? (
             <div className="flex items-center gap-3">
@@ -41,7 +55,7 @@ export function SiteNav() {
                 to="/studio"
                 className="hidden h-11 items-center rounded-full bg-primary px-5 text-sm font-semibold text-primary-fg hover:bg-primary-hover sm:inline-flex"
               >
-                New campaign
+                New pack
               </Link>
               <UserButton />
             </div>
@@ -81,7 +95,18 @@ export function SiteNav() {
             <Link to="/pricing" className="rounded-full px-3 py-3 text-muted hover:bg-surface hover:text-fg" onClick={() => setOpen(false)}>
               Pricing
             </Link>
-            {user ? (
+            <Link to="/faq" className="rounded-full px-3 py-3 text-muted hover:bg-surface hover:text-fg" onClick={() => setOpen(false)}>
+              FAQ
+            </Link>
+            {waitlist ? (
+              <a
+                href="/#notify"
+                className="mt-2 inline-flex h-12 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-fg"
+                onClick={() => setOpen(false)}
+              >
+                Get notified
+              </a>
+            ) : user ? (
               <>
                 <Link to="/studio" className="rounded-full px-3 py-3 text-muted hover:bg-surface hover:text-fg" onClick={() => setOpen(false)}>
                   Studio

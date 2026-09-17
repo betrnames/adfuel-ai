@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { PLAN_DETAILS, isPaidPlan } from "@/lib/ads/plans";
+import { PLAN_DETAILS, TRIAL_CREDITS, isPaidPlan, trialKitLine } from "@/lib/ads/plans";
 import type { Profile } from "@/lib/ads/types";
 
 export function FuelGauge({ profile, className }: { profile: Profile; className?: string }) {
   const details = isPaidPlan(profile.plan) ? PLAN_DETAILS[profile.plan] : null;
-  const cap = details?.credits ?? 3;
+  const cap = details?.credits ?? TRIAL_CREDITS;
   const pct = Math.max(0, Math.min(100, Math.round((profile.credits / cap) * 100)));
-  const planName = details ? `${details.name} ${details.octane}` : "3 free campaigns";
+  const planName = details ? `${details.name} ${details.octane}` : trialKitLine();
   const empty = profile.credits < 1;
 
   return (
@@ -46,9 +46,9 @@ export function FuelGauge({ profile, className }: { profile: Profile; className?
         <Link
           to="/checkout"
           search={{ plan: "regular" }}
-          className="ml-auto inline-flex h-9 items-center rounded-sm bg-primary px-3 text-sm font-medium text-primary-fg"
+          className="ml-auto inline-flex h-9 items-center rounded-full bg-primary px-3 text-sm font-semibold text-primary-fg hover:bg-primary-hover"
         >
-          Pay $12
+          Pay {PLAN_DETAILS.regular.priceLabel}
         </Link>
       ) : null}
     </div>

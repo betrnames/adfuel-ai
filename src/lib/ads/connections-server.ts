@@ -1,9 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getSql } from "@/lib/db";
 import { authMiddleware } from "@/lib/auth/middleware";
+import type { PlanId } from "./plans";
+import { loadOrCreateProfile } from "./profile";
 import {
   LLM_PROVIDERS,
   PROVIDER_META,
+  canUseHostedAi,
   type ConnectionPublic,
   type EngineSource,
   type LlmProviderId,
@@ -44,6 +47,11 @@ function hostedAvailable() {
   return Boolean(process.env.XAI_API_KEY);
 }
 
+async function ensurePlan(userId: string): Promise<PlanId> {
+  const profile = await loadOrCreateProfile(userId);
+  return profile.plan as PlanId;
+}
+
 async function loadRows(userId: string): Promise<{ conn: ConnRow | null; servers: McpRow[] }> {
   const sql = await getSql();
   const conn = await sql<ConnRow>`
@@ -68,7 +76,9 @@ async function toPublic(userId: string): Promise<ConnectionPublic> {
     }
   }
   const provider = asProvider(conn?.llm_provider);
+  const plan = await ensurePlan(userId);
   return {
+    plan,
     source: asSource(conn?.source),
     provider,
     model: conn?.llm_model || PROVIDER_META[provider].models[0],
@@ -149,6 +159,10 @@ export const saveGenerationSource = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ context, data }) => {
+    const plan = await ensurePlan(context.userId);
+    if (data.source === "hosted" && !canUseHostedAi(plan)) {
+      throw new Error("Hosted AI starts at $12. Add your own key, or pay Regular.");
+    }
     const sql = await getSql();
     const { encryptSecret } = await import("./secrets.server");
     const existing = await sql<ConnRow>`select user_id, llm_key_enc from user_connections where user_id = ${context.userId} limit 1`;

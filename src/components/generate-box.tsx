@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { savePending } from "@/lib/ads/pending";
 import { PLATFORM_WHERE } from "@/lib/ads/launch";
-import { PLATFORMS, type Platform } from "@/lib/ads/plans";
+import { PLAN_DETAILS, PLATFORMS, type Platform } from "@/lib/ads/plans";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { cn } from "@/lib/utils";
 
@@ -37,11 +37,11 @@ export function GenerateBox({
     event.preventDefault();
     const next = prompt.trim();
     if (next.length < 8) return;
-    savePending({ prompt: next, platform });
     if (onSubmitPrompt && user) {
       onSubmitPrompt({ prompt: next, platform });
       return;
     }
+    savePending({ prompt: next, platform });
     void navigate({ to: "/studio" });
   }
 
@@ -80,8 +80,8 @@ export function GenerateBox({
         ))}
       </div>
       <p className="mt-2 text-xs text-faint">
-        No ad account yet is fine. Free kits are drafts. Pay or add your key for AI.
-        {user ? (
+        Paste a URL. One watermarked draft is free. Pay {PLAN_DETAILS.regular.priceLabel} for 3 live statics.
+        {variant === "panel" ? (
           <>
             {" "}
             <Link to="/connections" className="text-muted underline-offset-4 hover:text-fg hover:underline">
@@ -106,19 +106,21 @@ export function GenerateBox({
       ) : null}
       {empty ? (
         <div className="mt-4 rounded-md border border-primary/30 bg-primary/10 p-4">
-          <p className="text-sm font-medium">Three free campaigns are used.</p>
-          <p className="mt-1 text-sm text-muted">Pay $12/mo for 50 more. Receipts live on Account.</p>
+          <p className="text-sm font-medium">Your free draft pack is used.</p>
+          <p className="mt-1 text-sm text-muted">
+            Pay {PLAN_DETAILS.regular.priceLabel}/mo for 3 live statics and the 7-day Launch plan, or add your own key.
+          </p>
           <Button
             type="button"
             className="mt-3 w-full"
             onClick={() => void navigate({ to: "/checkout", search: { plan: "regular" } })}
           >
-            Pay Regular — $12
+            {PLAN_DETAILS.regular.cta}
           </Button>
         </div>
       ) : (
         <Button type="submit" className="mt-4 w-full" size={variant === "hero" ? "lg" : "default"} disabled={busy}>
-          {busy ? "Writing the campaign…" : "Get my first campaign"}
+          {busy ? "Writing this week’s ads…" : "Get this week’s ads"}
           {busy ? null : <ArrowRight className="size-4" />}
         </Button>
       )}

@@ -3,11 +3,11 @@ import { toast } from "sonner";
 import { FuelGauge } from "@/components/fuel-gauge";
 import { AdPreview } from "@/components/ad-preview";
 import { GenerateBox } from "@/components/generate-box";
-import { generateAdPack, getMyProfile, listMyPacks } from "@/lib/ads/server";
+import { generateAdPack, getMyProfile, listMyPacks } from "@/lib/ads/packs-server";
 import { getMyConnections } from "@/lib/ads/connections-server";
 import { pickWriter, writerLabel } from "@/lib/ads/connections";
 import { takePending } from "@/lib/ads/pending";
-import type { Platform } from "@/lib/ads/plans";
+import { PLAN_DETAILS, trialKitLine, type Platform } from "@/lib/ads/plans";
 import type { AdPackRecord, Profile } from "@/lib/ads/types";
 import { cn } from "@/lib/utils";
 
@@ -21,8 +21,9 @@ export function StudioApp() {
   const [active, setActive] = useState<AdPackRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
-  const [hint, setHint] = useState("Draft free · AI when you pay or add a key");
+  const [hint, setHint] = useState("Draft free · live statics when you pay or add a key");
   const autoRan = useRef(false);
+  const inFlight = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,7 +59,8 @@ export function StudioApp() {
   }, []);
 
   async function run(input: { prompt: string; platform: Platform }) {
-    if (busy) return;
+    if (inFlight.current) return;
+    inFlight.current = true;
     setBusy(true);
     try {
       const result = await generateAdPack({ data: input });
@@ -80,15 +82,16 @@ export function StudioApp() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Generation failed");
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
   }
 
   useEffect(() => {
     if (loading || !profile || autoRan.current) return;
+    autoRan.current = true;
     const pending = takePending();
     if (!pending) return;
-    autoRan.current = true;
     void run(pending);
   }, [loading, profile]);
 
@@ -107,11 +110,11 @@ export function StudioApp() {
   const empty = profile.credits < 1;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+    <div className="mx-auto max-w-6xl px-4 py-6 pb-24 sm:px-6 sm:py-8">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary-soft">Studio</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">Build a first campaign.</h1>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight">Build this week’s ads.</h1>
         </div>
         <FuelGauge profile={profile} className="sm:min-w-[320px]" />
       </div>
@@ -119,21 +122,21 @@ export function StudioApp() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_1fr]">
         <GenerateBox variant="panel" onSubmitPrompt={run} busy={busy} empty={empty} writerHint={hint} />
 
-        <div className="space-y-4">
+        <div className="space-y-4 lg:pr-16">
           {busy ? (
             <div className="rounded-xl border border-border bg-surface px-6 py-16 text-center">
               <div className="mx-auto h-1.5 w-40 overflow-hidden rounded-full bg-surface-2">
                 <div className="h-full w-1/2 animate-pulse rounded-full bg-primary" />
               </div>
-              <p className="mt-4 text-sm text-muted">Writing copy, budget, and the launch steps.</p>
+              <p className="mt-4 text-sm text-muted">Writing 3 statics, copy, and the 7-day plan.</p>
             </div>
           ) : active ? (
             <AdPreview pack={active} shareable />
           ) : (
             <div className="rounded-xl border border-dashed border-border bg-surface px-6 py-16 text-center">
-              <p className="text-sm font-medium">No ad account needed.</p>
+              <p className="text-sm font-medium">Paste a product URL.</p>
               <p className="mt-2 text-sm text-muted">
-                Three free campaigns. Each one includes the clicks to go live.
+                {trialKitLine().replace(/^./, (c) => c.toUpperCase())}. Pay {PLAN_DETAILS.regular.priceLabel} for 3 live statics and the 7-day Launch plan.
               </p>
             </div>
           )}

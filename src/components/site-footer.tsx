@@ -8,23 +8,26 @@ export function SiteFooter() {
         <div>
           <Logo />
           <p className="mt-3 max-w-sm text-sm text-muted">
-            Self-serve first-campaign kit. Copy, budget, launch steps. You go live. We don’t run ads.
-            Free kits are drafts. AI when you pay — or your own key.
+            Self-serve first-week ads. 3 statics, copy, 7-day Launch plan. You go live. We don’t run ads.
+            One watermarked draft is free. Live statics when you pay — or your own key.
           </p>
         </div>
         <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-          <Link to="/studio" className="hover:text-fg">
-            Studio
-          </Link>
           <Link to="/pricing" className="hover:text-fg">
             Pricing
           </Link>
-          <Link to="/connections" className="hover:text-fg">
-            Connections
+          <Link to="/faq" className="hover:text-fg">
+            FAQ
           </Link>
-          <Link to="/account" className="hover:text-fg">
-            Account
+          <Link to="/legal" hash="terms" className="hover:text-fg">
+            Terms
           </Link>
+          <Link to="/legal" hash="privacy" className="hover:text-fg">
+            Privacy
+          </Link>
+          <a href="/llms.txt" className="hover:text-fg">
+            llms.txt
+          </a>
         </div>
       </div>
       <div className="border-t border-border">
